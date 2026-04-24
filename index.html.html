@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>IGEM — Bureau d'Études Techniques</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  background:#0a1628;
+  color:#fff;
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+:root {
+  --navy:#0a1628;
+  --deep:#0d1f3c;
+  --teal:#00a896;
+  --teal-l:#02c39a;
+  --white:#fff;
+  --gray:#8a9ab5;
+  --card:rgba(255,255,255,0.04);
+  --bdr:rgba(255,255,255,0.08);
+  --pad:clamp(1rem,5vw,4rem);
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.9rem var(--pad);
+  background:rgba(10,22,40,.92);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--bdr);
+  min-height:56px;
+}
+.nav-logo {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.2rem,4vw,1.6rem);
+  font-weight:900; color:#fff; flex-shrink:0;
+}
+.nav-logo span { color:var(--teal); }
+
+/* Hamburger */
+.hamburger {
+  display:none; flex-direction:column; gap:5px;
+  background:none; border:none; cursor:pointer; padding:6px; flex-shrink:0;
+}
+.hamburger span {
+  display:block; width:24px; height:2px;
+  background:#fff; border-radius:2px;
+  transition:transform .3s, opacity .3s;
+}
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+.nav-links {
+  display:flex; gap:2rem; list-style:none;
+}
+.nav-links a {
+  color:var(--gray); text-decoration:none;
+  font-size:.8rem; font-weight:500;
+  letter-spacing:.07em; text-transform:uppercase;
+  transition:color .3s; white-space:nowrap;
+}
+.nav-links a:hover, .nav-links a.active { color:var(--teal); }
+
+/* Mobile nav drawer */
+@media(max-width:768px){
+  .hamburger { display:flex; }
+  .nav-links {
+    position:fixed; top:56px; left:0; right:0;
+    background:rgba(10,22,40,.98);
+    flex-direction:column; gap:0;
+    padding:0; list-style:none;
+    transform:translateY(-110%);
+    transition:transform .35s cubic-bezier(.4,0,.2,1);
+    border-bottom:1px solid var(--bdr);
+    z-index:190;
+  }
+  .nav-links.open { transform:translateY(0); }
+  .nav-links li { border-bottom:1px solid var(--bdr); }
+  .nav-links a {
+    display:block; padding:1rem 1.5rem;
+    font-size:.9rem;
+  }
+}
+
+/* ── HERO ── */
+#hero {
+  min-height:100svh;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  padding:calc(56px + 3rem) var(--pad) 3rem;
+}
+.hero-bg {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(0,168,150,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 10% 80%, rgba(201,168,76,.07) 0%, transparent 50%);
+}
+.grid-lines {
+  position:absolute; inset:0; opacity:.04; pointer-events:none;
+  background-image:
+    linear-gradient(#fff 1px,transparent 1px),
+    linear-gradient(90deg,#fff 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.hero-inner {
+  position:relative; z-index:2;
+  max-width:720px; width:100%; text-align:center;
+  animation:fadeUp .8s ease both;
+}
+.hero-label {
+  display:inline-flex; align-items:center; gap:.6rem;
+  background:rgba(0,168,150,.12); border:1px solid rgba(0,168,150,.3);
+  border-radius:2rem; padding:.35rem .9rem;
+  font-size:clamp(.65rem,.3rem + 1.5vw,.75rem);
+  letter-spacing:.1em; text-transform:uppercase; color:var(--teal);
+  margin-bottom:1.2rem;
+}
+.hero-label::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,2rem + 3vw,4.5rem);
+  line-height:1.05; font-weight:900; letter-spacing:-.02em;
+}
+h1 em { color:var(--teal); font-style:normal; }
+.hero-sub {
+  margin-top:1.2rem; color:var(--gray);
+  font-size:clamp(.9rem,1rem + .5vw,1.1rem); line-height:1.7;
+}
+.hero-pills {
+  display:flex; flex-wrap:wrap; gap:.5rem;
+  margin-top:1.5rem; justify-content:center;
+}
+.pill {
+  border:1px solid var(--bdr); border-radius:2rem;
+  padding:.3rem .8rem;
+  font-size:clamp(.68rem,.5rem + .5vw,.78rem); color:var(--gray);
+}
+.hero-cta {
+  display:flex; flex-wrap:wrap; gap:.8rem;
+  margin-top:2rem; justify-content:center;
+}
+.btn-primary {
+  background:var(--teal); color:var(--navy);
+  padding:.85rem clamp(1.2rem,4vw,2rem);
+  border-radius:.4rem; font-weight:700;
+  font-size:clamp(.82rem,.7rem + .5vw,.9rem);
+  text-decoration:none; transition:background .3s,transform .2s;
+  display:inline-block; white-space:nowrap;
+}
+.btn-primary:hover { background:var(--teal-l); transform:translateY(-2px); }
+.btn-outline {
+  border:1px solid var(--bdr); color:#fff;
+  padding:.85rem clamp(1.2rem,4vw,2rem);
+  border-radius:.4rem; font-weight:500;
+  font-size:clamp(.82rem,.7rem + .5vw,.9rem);
+  text-decoration:none; transition:border-color .3s,transform .2s;
+  display:inline-block; white-space:nowrap;
+}
+.btn-outline:hover { border-color:var(--teal); transform:translateY(-2px); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.reveal { opacity:0; transform:translateY(24px); transition:opacity .65s ease,transform .65s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+/* ── SECTIONS ── */
+.sec { padding:clamp(3rem,8vw,6rem) var(--pad); max-width:1200px; margin:0 auto; }
+.sec-full { padding:clamp(3rem,8vw,6rem) var(--pad); }
+.sec-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.6rem,1.5rem + 2vw,3rem);
+  font-weight:900; line-height:1.1; letter-spacing:-.02em;
+}
+.sec-title span { color:var(--teal); }
+.divider { width:3rem; height:3px; background:linear-gradient(90deg,var(--teal),transparent); margin:1.2rem 0 2rem; }
+
+/* ── ABOUT ── */
+.about-text p { color:var(--gray); line-height:1.8; font-size:clamp(.9rem,.85rem + .3vw,1.05rem); margin-bottom:1.2rem; }
+
+/* ── EXPERTISE GRID ── */
+.exp-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));
+  gap:1rem; margin-top:2rem;
+}
+.exp-card {
+  background:var(--card); border:1px solid var(--bdr);
+  border-radius:1rem; padding:1.5rem;
+  position:relative; overflow:hidden;
+  transition:border-color .3s,transform .3s;
+}
+.exp-card:hover { border-color:rgba(0,168,150,.4); transform:translateY(-4px); }
+.exp-card::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg,var(--teal),transparent);
+  opacity:0; transition:opacity .3s;
+}
+.exp-card:hover::before { opacity:1; }
+.exp-num { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; color:rgba(0,168,150,.15); line-height:1; margin-bottom:.4rem; }
+.exp-title { font-weight:700; font-size:.95rem; margin-bottom:.8rem; }
+.exp-items { list-style:none; }
+.exp-items li {
+  color:var(--gray); font-size:.8rem; line-height:1.5;
+  padding:.35rem 0; border-bottom:1px solid var(--bdr);
+  display:flex; align-items:flex-start; gap:.45rem;
+}
+.exp-items li:last-child { border-bottom:none; }
+.exp-items li::before { content:'▸'; color:var(--teal); flex-shrink:0; margin-top:.05rem; }
+
+/* ── APPROACH ── */
+.timeline { display:flex; flex-direction:column; gap:0; margin-top:2rem; position:relative; }
+.timeline::before {
+  content:''; position:absolute;
+  left:clamp(1.4rem,4vw,1.9rem);
+  top:2.5rem; bottom:2.5rem; width:2px;
+  background:linear-gradient(180deg,var(--teal),rgba(0,168,150,.1));
+}
+.t-step { display:flex; gap:clamp(.8rem,3vw,2rem); align-items:flex-start; padding:1.2rem 0; }
+.t-num {
+  width:clamp(2.8rem,7vw,3.8rem); height:clamp(2.8rem,7vw,3.8rem);
+  border-radius:50%; background:var(--deep); border:2px solid var(--teal);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1rem,2.5vw,1.3rem); font-weight:900; color:var(--teal);
+  flex-shrink:0; z-index:1; transition:background .3s;
+}
+.t-step:hover .t-num { background:var(--teal); color:var(--navy); }
+.t-body { padding-top:.4rem; }
+.t-title { font-weight:700; font-size:clamp(.92rem,1rem + .2vw,1.05rem); margin-bottom:.3rem; }
+.t-desc { color:var(--gray); font-size:clamp(.8rem,.75rem + .3vw,.9rem); line-height:1.7; }
+
+/* ── SERVICES TABS ── */
+.tabs-scroll {
+  display:flex; gap:.5rem; overflow-x:auto;
+  padding-bottom:.5rem; margin-bottom:2rem; margin-top:1.5rem;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.tabs-scroll::-webkit-scrollbar { display:none; }
+.tab-btn {
+  background:var(--card); border:1px solid var(--bdr);
+  border-radius:2rem; padding:.45rem 1rem;
+  color:var(--gray); font-size:.75rem; font-weight:500;
+  cursor:pointer; font-family:'DM Sans',sans-serif;
+  transition:all .3s; white-space:nowrap; flex-shrink:0;
+}
+.tab-btn:hover, .tab-btn.active {
+  background:rgba(0,168,150,.15); border-color:rgba(0,168,150,.4); color:var(--teal);
+}
+.svc-panels { }
+.svc-panel { display:none; }
+.svc-panel.active { display:block; }
+.panel-grid {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1.5rem;
+}
+@media(min-width:640px){
+  .panel-grid { grid-template-columns:1fr 1fr; }
+}
+.panel-icon { font-size:2rem; margin-bottom:.8rem; }
+.panel-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,1.2rem + 1.5vw,1.8rem);
+  font-weight:900; line-height:1.15; margin-bottom:.7rem;
+}
+.panel-title span { color:var(--teal); }
+.panel-desc { color:var(--gray); font-size:clamp(.82rem,.78rem + .3vw,.95rem); line-height:1.7; margin-bottom:1.2rem; }
+.panel-pts { list-style:none; display:flex; flex-direction:column; gap:.7rem; }
+.panel-pts li { display:flex; align-items:flex-start; gap:.7rem; color:var(--gray); font-size:clamp(.78rem,.75rem + .25vw,.88rem); line-height:1.6; }
+.panel-pts li::before { content:'▸'; color:var(--teal); flex-shrink:0; margin-top:.2rem; }
+.panel-visual {
+  background:var(--card); border:1px solid var(--bdr);
+  border-radius:1rem; padding:1.5rem;
+  display:flex; flex-direction:column; gap:.9rem;
+}
+.panel-sub { font-size:.65rem; letter-spacing:.18em; text-transform:uppercase; color:var(--teal); font-weight:600; margin-bottom:.2rem; }
+.det-item {
+  background:rgba(255,255,255,.03); border:1px solid var(--bdr);
+  border-radius:.6rem; padding:.9rem 1rem;
+  border-left:3px solid rgba(0,168,150,.4);
+}
+.det-item strong { font-size:.82rem; display:block; margin-bottom:.25rem; }
+.det-item p { color:var(--gray); font-size:.74rem; line-height:1.5; }
+
+/* ── CONTACT ── */
+.contact-grid {
+  display:grid; grid-template-columns:1fr;
+  gap:2.5rem; margin-top:2rem;
+}
+@media(min-width:700px){ .contact-grid { grid-template-columns:1fr 1fr; } }
+.contact-info p { color:var(--gray); line-height:1.8; margin-bottom:1.5rem; font-size:clamp(.88rem,.85rem + .25vw,1rem); }
+.contact-dets { display:flex; flex-direction:column; gap:.9rem; }
+.c-det { display:flex; align-items:flex-start; gap:.9rem; }
+.c-det .ico {
+  width:38px; height:38px; border-radius:.5rem; flex-shrink:0;
+  background:rgba(0,168,150,.12); border:1px solid rgba(0,168,150,.2);
+  display:flex; align-items:center; justify-content:center; font-size:.95rem;
+}
+.c-det .lbl { font-size:.68rem; color:var(--gray); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.2rem; }
+.c-det a { color:#fff; text-decoration:none; font-size:.92rem; }
+.c-det a:hover { color:var(--teal); }
+.c-det .addr { color:#fff; font-size:.88rem; line-height:1.7; }
+
+.cform { display:flex; flex-direction:column; gap:1rem; }
+.fg { display:flex; flex-direction:column; gap:.4rem; }
+.fg label { font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gray); font-weight:500; }
+.fg input, .fg textarea, .fg select {
+  background:rgba(255,255,255,.04); border:1px solid var(--bdr);
+  border-radius:.55rem; padding:.8rem 1rem;
+  color:#fff; font-family:'DM Sans',sans-serif;
+  font-size:clamp(.88rem,.85rem + .2vw,.95rem);
+  outline:none; transition:border-color .3s,background .3s;
+  width:100%; -webkit-appearance:none; appearance:none;
+}
+.fg input:focus, .fg textarea:focus, .fg select:focus { border-color:var(--teal); background:rgba(0,168,150,.06); }
+.fg textarea { min-height:120px; resize:vertical; }
+.fg select option { background:#0d1f3c; color:#fff; }
+.frow { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+@media(max-width:480px){ .frow { grid-template-columns:1fr; } }
+.btn-send {
+  background:var(--teal); color:var(--navy); border:none; border-radius:.5rem;
+  padding:1rem 1.5rem; font-size:clamp(.88rem,.85rem + .2vw,.95rem); font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.5rem;
+  font-family:'DM Sans',sans-serif; transition:background .3s,transform .2s;
+  width:100%; touch-action:manipulation;
+}
+.btn-send:hover { background:var(--teal-l); transform:translateY(-2px); }
+.btn-send:active { transform:none; }
+.btn-send:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+.fsuccess {
+  background:rgba(0,168,150,.12); border:1px solid rgba(0,168,150,.3);
+  border-radius:.7rem; padding:1.2rem; color:var(--teal);
+  font-weight:500; text-align:center; display:none; font-size:.9rem;
+}
+.ferror { color:#ff6b6b; font-size:.78rem; margin-top:.25rem; display:none; }
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--bdr);
+  padding:2rem var(--pad);
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem;
+}
+.f-logo { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:900; }
+.f-logo span { color:var(--teal); }
+footer p { color:var(--gray); font-size:.75rem; }
+
+/* back to top btn */
+.totop {
+  position:fixed; bottom:1.5rem; right:1.5rem; z-index:100;
+  width:42px; height:42px; border-radius:50%;
+  background:var(--teal); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; color:var(--navy);
+  opacity:0; pointer-events:none;
+  transition:opacity .3s,transform .3s;
+  box-shadow:0 4px 16px rgba(0,168,150,.35);
+}
+.totop.show { opacity:1; pointer-events:auto; }
+.totop:hover { transform:translateY(-3px); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">IG<span>E</span>M</div>
+  <button class="hamburger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" onclick="closeMenu()">À Propos</a></li>
+    <li><a href="#expertise" onclick="closeMenu()">Expertise</a></li>
+    <li><a href="#approach" onclick="closeMenu()">Approche</a></li>
+    <li><a href="#services-detail" onclick="closeMenu()">Nos Services</a></li>
+    <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-label">Bureau d'Études Techniques — Maroc</div>
+    <h1>Ingénierie &amp;<br><em>Expertise</em><br>pour l'Avenir</h1>
+    <p class="hero-sub">Bureau d'études pluridisciplinaire spécialisé dans la réalisation d'études d'ingénierie et l'accompagnement des maîtres d'ouvrage à chaque étape du cycle de leurs projets.</p>
+    <div class="hero-pills">
+      <span class="pill">Hydroagricole</span>
+      <span class="pill">Hydraulique</span>
+      <span class="pill">Environnement</span>
+      <span class="pill">Maîtrise d'Œuvre</span>
+      <span class="pill">Études de Faisabilité</span>
+      <span class="pill">Impact Environnemental</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary">Nous Contacter →</a>
+      <a href="#services-detail" class="btn-outline">Nos Services</a>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="sec">
+  <h2 class="sec-title reveal">À propos d'<span>IGEM</span></h2>
+  <div class="divider reveal"></div>
+  <div class="about-text reveal">
+    <p><strong>IGEM</strong> est un bureau d'études techniques pluridisciplinaire spécialisé dans la réalisation d'études d'ingénierie et l'accompagnement des maîtres d'ouvrage publics et privés à toutes les étapes du cycle des projets.</p>
+    <p>Notre équipe conjugue expertise technique, rigueur méthodologique et engagement environnemental pour livrer des solutions d'ingénierie durables et adaptées aux réalités du terrain marocain.</p>
+  </div>
+</section>
+
+<!-- EXPERTISE -->
+<div id="expertise" class="sec-full" style="background:linear-gradient(180deg,var(--navy),#091522);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <h2 class="sec-title reveal">Nos <span>Compétences</span></h2>
+    <div class="divider reveal"></div>
+    <div class="exp-grid">
+      <div class="exp-card reveal">
+        <div class="exp-num">01</div>
+        <div class="exp-title">Travaux Hydroagricoles</div>
+        <ul class="exp-items">
+          <li>Études foncières et remembrement rural</li>
+          <li>Plantations et accompagnement agriculteurs</li>
+          <li>Études pistes, routes et VRD</li>
+          <li>Calculs spécifiques multi-disciplines</li>
+          <li>Assistance technique &amp; suivi de projets</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-num">02</div>
+        <div class="exp-title">Alimentation en Eau Potable</div>
+        <ul class="exp-items">
+          <li>Études AEP rurales et urbaines</li>
+          <li>Captages, réservoirs, réseaux</li>
+          <li>Stations de pompage</li>
+          <li>Expertise milieu rural montagneux</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-num">03</div>
+        <div class="exp-title">Hydraulique &amp; Assainissement</div>
+        <ul class="exp-items">
+          <li>Études d'assainissement liquide</li>
+          <li>Drainage &amp; gestion eaux pluviales</li>
+          <li>Barrages et ouvrages hydrauliques</li>
+          <li>Dimensionnement hydraulique</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-num">04</div>
+        <div class="exp-title">Études Environnementales</div>
+        <ul class="exp-items">
+          <li>Études d'impact environnemental</li>
+          <li>Audits environnementaux</li>
+          <li>Plans de gestion (PGES)</li>
+          <li>Conformité réglementaire</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-num">05</div>
+        <div class="exp-title">Suivi &amp; Contrôle des Travaux</div>
+        <ul class="exp-items">
+          <li>Mission de maîtrise d'œuvre</li>
+          <li>Supervision &amp; contrôle qualité</li>
+          <li>Rapports de suivi de chantier</li>
+          <li>Réception des ouvrages</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal" style="background:linear-gradient(135deg,rgba(0,168,150,.12),rgba(0,168,150,.04));border-color:rgba(0,168,150,.25);">
+        <div style="height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:.9rem;padding:.5rem 0;">
+          <div style="font-size:2rem;">🌊</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--teal);">Ingénierie Durable</div>
+          <p style="color:var(--gray);font-size:.82rem;line-height:1.6;">Des solutions techniques au service du développement durable du territoire marocain.</p>
+          <a href="#contact" class="btn-primary" style="font-size:.8rem;padding:.65rem 1.3rem;">Démarrer un projet</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<section id="approach" class="sec">
+  <h2 class="sec-title reveal">Méthodologie <span>Rigoureuse</span></h2>
+  <div class="divider reveal"></div>
+  <div class="timeline">
+    <div class="t-step reveal">
+      <div class="t-num">1</div>
+      <div class="t-body">
+        <div class="t-title">Diagnostic &amp; Analyse</div>
+        <div class="t-desc">Collecte de données terrain, analyse approfondie des besoins et évaluation des contraintes spécifiques au projet.</div>
+      </div>
+    </div>
+    <div class="t-step reveal">
+      <div class="t-num">2</div>
+      <div class="t-body">
+        <div class="t-title">Études Techniques</div>
+        <div class="t-desc">Dimensionnement, variantes techniques, études hydrauliques et géotechniques pour des solutions optimales.</div>
+      </div>
+    </div>
+    <div class="t-step reveal">
+      <div class="t-num">3</div>
+      <div class="t-body">
+        <div class="t-title">Conception &amp; Plans</div>
+        <div class="t-desc">Plans d'exécution, notes de calcul, CCTP et estimatif détaillé des travaux avec rigueur documentaire.</div>
+      </div>
+    </div>
+    <div class="t-step reveal">
+      <div class="t-num">4</div>
+      <div class="t-body">
+        <div class="t-title">Suivi Chantier</div>
+        <div class="t-desc">Supervision, contrôle qualité et réception des ouvrages réalisés pour garantir la conformité et la durabilité.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES DETAIL -->
+<div id="services-detail" class="sec-full" style="background:linear-gradient(180deg,#091522,var(--navy));">
+  <div style="max-width:1200px;margin:0 auto;">
+    <h2 class="sec-title reveal">Nos <span>Services</span> en Détail</h2>
+    <div class="divider reveal"></div>
+    <div class="tabs-scroll reveal" id="tabsRow">
+      <button class="tab-btn active" onclick="showTab('t1',this)">Identification &amp; Évaluation</button>
+      <button class="tab-btn" onclick="showTab('t2',this)">Faisabilité</button>
+      <button class="tab-btn" onclick="showTab('t3',this)">Définition</button>
+      <button class="tab-btn" onclick="showTab('t4',this)">APS</button>
+      <button class="tab-btn" onclick="showTab('t5',this)">APD</button>
+      <button class="tab-btn" onclick="showTab('t6',this)">DCE</button>
+      <button class="tab-btn" onclick="showTab('t7',this)">Propositions Techniques</button>
+      <button class="tab-btn" onclick="showTab('t8',this)">Exécution Travaux</button>
+      <button class="tab-btn" onclick="showTab('t9',this)">Assistance &amp; Suivi</button>
+      <button class="tab-btn" onclick="showTab('t10',this)">Impact Environnemental</button>
+      <button class="tab-btn" onclick="showTab('t11',this)">Risques Naturels</button>
+      <button class="tab-btn" onclick="showTab('t12',this)">Plans Directeurs</button>
+      <button class="tab-btn" onclick="showTab('t13',this)">Post-évaluation</button>
+    </div>
+
+    <div class="svc-panels">
+
+      <div id="t1" class="svc-panel active"><div class="panel-grid">
+        <div><div class="panel-icon">📋</div><div class="panel-title">Identification<br><span>et Évaluation</span></div><p class="panel-desc">Première étape structurante du cycle de projet pour établir une vision claire du contexte et de la pertinence de l'intervention.</p><ul class="panel-pts"><li>Analyse du contexte territorial, technique, environnemental et réglementaire du projet</li><li>Identification des enjeux, opportunités et contraintes majeures</li><li>Évaluation préliminaire de la pertinence et de la faisabilité des projets</li><li>Appui à la définition des priorités d'intervention des Maîtres d'Ouvrage</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Livrables clés</div><div class="det-item"><strong>Rapport de contexte</strong><p>Analyse territoriale, technique, environnementale et réglementaire complète</p></div><div class="det-item"><strong>Note d'enjeux</strong><p>Identification des opportunités et contraintes majeures du projet</p></div><div class="det-item"><strong>Évaluation préliminaire</strong><p>Pertinence et faisabilité initiale, appui à la priorisation MOA</p></div></div>
+      </div></div>
+
+      <div id="t2" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">🔍</div><div class="panel-title">Études de<br><span>Faisabilité</span></div><p class="panel-desc">Analyse globale permettant de sécuriser la décision de lancement du projet en évaluant toutes les dimensions de sa réalisation.</p><ul class="panel-pts"><li>Analyse globale de la faisabilité technique, économique, environnementale et réglementaire</li><li>Étude comparative des variantes et scénarios de développement</li><li>Identification des risques majeurs et des contraintes des projets</li><li>Appui à la prise de décision et sécurisation du lancement des projets</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Dimensions analysées</div><div class="det-item"><strong>Technique</strong><p>Évaluation des solutions techniques envisageables et de leur faisabilité</p></div><div class="det-item"><strong>Économique</strong><p>Analyse des coûts, bénéfices et rentabilité du projet</p></div><div class="det-item"><strong>Environnementale &amp; Réglementaire</strong><p>Conformité, risques et contraintes du cadre légal en vigueur</p></div></div>
+      </div></div>
+
+      <div id="t3" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">🎯</div><div class="panel-title">Études de<br><span>Définition</span></div><p class="panel-desc">Traduction des résultats des études amont en orientations techniques claires pour préparer les phases d'Avant-Projet.</p><ul class="panel-pts"><li>Traduction des résultats des études amont et de faisabilité en orientations techniques claires</li><li>Définition des principes fonctionnels, techniques et environnementaux des projets</li><li>Analyse des contraintes du site et identification des choix structurants</li><li>Cadrage du projet en vue des phases d'Avant-Projet et élaboration des termes de référence</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Résultats attendus</div><div class="det-item"><strong>Orientations techniques</strong><p>Principes fonctionnels, techniques et environnementaux validés</p></div><div class="det-item"><strong>Choix structurants</strong><p>Analyse des contraintes site et définition des options majeures</p></div><div class="det-item"><strong>Termes de référence</strong><p>Base pour les études de conception et phases d'Avant-Projet</p></div></div>
+      </div></div>
+
+      <div id="t4" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">📐</div><div class="panel-title">Avant-Projet<br><span>Sommaire (APS)</span></div><p class="panel-desc">Phase d'optimisation technico-économique permettant de valider les options majeures avant la conception détaillée.</p><ul class="panel-pts"><li>Développement des variantes et solutions techniques possibles</li><li>Dimensionnements préliminaires des ouvrages et infrastructures</li><li>Analyse comparative multicritères des variantes et optimisation technico-économique</li><li>Estimation globale des coûts et premières échéances des projets</li><li>Validation des options majeures avant le passage à l'APD</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Éléments produits</div><div class="det-item"><strong>Variantes techniques</strong><p>Développement et comparaison multicritères des solutions possibles</p></div><div class="det-item"><strong>Dimensionnements préliminaires</strong><p>Calculs de base pour les ouvrages et infrastructures</p></div><div class="det-item"><strong>Estimation globale</strong><p>Coûts prévisionnels et premières échéances du projet</p></div></div>
+      </div></div>
+
+      <div id="t5" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">📏</div><div class="panel-title">Avant-Projet<br><span>Détaillé (APD)</span></div><p class="panel-desc">Conception complète et détaillée des ouvrages, constituant la base technique fiable pour la consultation des entreprises.</p><ul class="panel-pts"><li>Dimensionnement détaillé des ouvrages et infrastructures conformément aux normes en vigueur</li><li>Définition précise des caractéristiques techniques, constructives et fonctionnelles</li><li>Établissement des plans, notes de calcul et pièces techniques détaillées</li><li>Estimation financière affinée et planification prévisionnelle des travaux</li><li>Constitution d'un dossier technique fiable pour la consultation des entreprises</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Dossier technique</div><div class="det-item"><strong>Plans d'exécution</strong><p>Plans techniques détaillés conformes aux normes en vigueur</p></div><div class="det-item"><strong>Notes de calcul</strong><p>Justification technique complète des dimensionnements retenus</p></div><div class="det-item"><strong>Estimation financière</strong><p>Coût prévisionnel affiné et planning détaillé des travaux</p></div></div>
+      </div></div>
+
+      <div id="t6" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">📄</div><div class="panel-title">Documents de Consultation<br><span>des Entreprises (DCE)</span></div><p class="panel-desc">Élaboration complète des dossiers de consultation garantissant la sécurisation du processus de passation des marchés.</p><ul class="panel-pts"><li>Elaboration complète des dossiers techniques, administratifs et contractuels</li><li>Rédaction des cahiers des charges, pièces écrites et dossiers de plans</li><li>Définition des critères techniques et financiers d'évaluation des offres</li><li>Vérification de la cohérence entre les études de conception et les exigences contractuelles</li><li>Sécurisation des processus de passation des marchés</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Pièces du dossier</div><div class="det-item"><strong>Cahiers des charges</strong><p>Pièces écrites techniques et administratives complètes</p></div><div class="det-item"><strong>Critères d'évaluation</strong><p>Grille technique et financière pour l'analyse des offres</p></div><div class="det-item"><strong>Dossiers de plans</strong><p>Plans contractuels inclus dans le dossier de consultation</p></div></div>
+      </div></div>
+
+      <div id="t7" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">💼</div><div class="panel-title">Propositions Techniques<br><span>pour les Entreprises</span></div><p class="panel-desc">Assistance aux entreprises de travaux pour renforcer la compétitivité et la conformité de leurs offres.</p><ul class="panel-pts"><li>Assistance dans l'analyse des dossiers de consultation et des exigences techniques</li><li>Élaboration et structuration des mémoires techniques et méthodologies d'exécution</li><li>Optimisation des solutions techniques et des variantes proposées</li><li>Établissement et cohérence des offres financières (quantitatifs, estimations, délais)</li><li>Renforcement de la compétitivité et conformité des offres soumises</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Appui aux entreprises</div><div class="det-item"><strong>Mémoires techniques</strong><p>Structuration des méthodologies d'exécution et solutions techniques</p></div><div class="det-item"><strong>Offres financières</strong><p>Cohérence des quantitatifs, estimations et délais de réalisation</p></div><div class="det-item"><strong>Conformité des offres</strong><p>Vérification et renforcement de la compétitivité des soumissions</p></div></div>
+      </div></div>
+
+      <div id="t8" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">🏗️</div><div class="panel-title">Études d'Exécution<br><span>des Travaux</span></div><p class="panel-desc">Élaboration de tous les documents techniques nécessaires à la réalisation des ouvrages dans les meilleures conditions.</p><ul class="panel-pts"><li>Elaboration des plans et documents techniques détaillés pour la réalisation des ouvrages</li><li>Vérification de la conformité avec les études de conception et les normes en vigueur</li><li>Optimisation des méthodes et séquences d'exécution sur le terrain</li><li>Anticipation et gestion des contraintes techniques et environnementales</li><li>Support technique pour assurer la qualité, la sécurité et le respect des délais</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Documents produits</div><div class="det-item"><strong>Plans d'exécution détaillés</strong><p>Documents techniques précis pour la réalisation des ouvrages</p></div><div class="det-item"><strong>Méthodes d'exécution</strong><p>Optimisation des séquences et procédés de construction</p></div><div class="det-item"><strong>Support technique</strong><p>Accompagnement qualité, sécurité et respect des délais</p></div></div>
+      </div></div>
+
+      <div id="t9" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">👷</div><div class="panel-title">Assistance Technique<br><span>et Suivi des Travaux</span></div><p class="panel-desc">Accompagnement permanent des Maîtres d'Ouvrage tout au long de la phase d'exécution pour garantir la réussite globale des projets.</p><ul class="panel-pts"><li>Accompagnement des Maîtres d'Ouvrage tout au long de la phase d'exécution</li><li>Contrôle technique de la qualité des travaux et respect des normes en vigueur</li><li>Suivi des délais, des coûts et de la coordination entre intervenants</li><li>Gestion des interfaces, aléas et ajustements en temps réel</li><li>Garantie de la conformité, de la sécurité et de la réussite globale des projets</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Missions de suivi</div><div class="det-item"><strong>Contrôle qualité</strong><p>Vérification technique permanente et respect des normes</p></div><div class="det-item"><strong>Gestion délais &amp; coûts</strong><p>Coordination entre tous les intervenants du chantier</p></div><div class="det-item"><strong>Gestion des aléas</strong><p>Ajustements en temps réel pour garantir la conformité finale</p></div></div>
+      </div></div>
+
+      <div id="t10" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">🌍</div><div class="panel-title">Impact<br><span>Environnemental &amp; Social</span></div><p class="panel-desc">Réalisation d'études complètes permettant l'obtention de l'acceptabilité environnementale et l'accompagnement des parties prenantes.</p><ul class="panel-pts"><li>Réalisation d'EIES conformément à la réglementation en vigueur</li><li>Elaboration de plans de gestion environnementale et sociale (PGES)</li><li>Accompagnement pour l'obtention de l'acceptabilité environnementale</li><li>Conduite de consultations publiques et accompagnement des parties prenantes</li><li>Suivi et audit environnemental et social des projets</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Livrables</div><div class="det-item"><strong>EIES complète</strong><p>Étude d'impact environnemental et social conforme à la réglementation</p></div><div class="det-item"><strong>PGES</strong><p>Plan de gestion environnementale et sociale du projet</p></div><div class="det-item"><strong>Consultations publiques</strong><p>Animation et accompagnement des parties prenantes</p></div></div>
+      </div></div>
+
+      <div id="t11" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">⚠️</div><div class="panel-title">Études de<br><span>Risques Naturels</span></div><p class="panel-desc">Identification et analyse des risques naturels pour renforcer la résilience et la durabilité des investissements.</p><ul class="panel-pts"><li>Identification et analyse des risques naturels</li><li>Evaluation de la vulnérabilité des périmètres naturels et des infrastructures</li><li>Proposition de mesures de prévention, de protection et de mitigation des risques</li><li>Elaboration de scénarios et plans de gestion des risques naturels</li><li>Contribution à la résilience et à la durabilité des investissements</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Domaines couverts</div><div class="det-item"><strong>Analyse des risques</strong><p>Identification et évaluation de la vulnérabilité des sites</p></div><div class="det-item"><strong>Mesures de protection</strong><p>Prévention, protection et mitigation des risques naturels</p></div><div class="det-item"><strong>Plans de gestion</strong><p>Scénarios et plans de réponse aux risques identifiés</p></div></div>
+      </div></div>
+
+      <div id="t12" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">🗺️</div><div class="panel-title">Élaboration des<br><span>Plans Directeurs</span></div><p class="panel-desc">Définition d'une vision stratégique globale pour le développement territorial ou sectoriel à moyen et long terme.</p><ul class="panel-pts"><li>Définition d'une vision stratégique globale pour le développement territorial ou sectoriel</li><li>Hiérarchisation des projets et planification des investissements à moyen et long terme</li><li>Intégration des contraintes techniques, environnementales et réglementaires</li><li>Proposition de scénarios d'aménagement optimisés et durables</li><li>Outil d'aide à la décision pour les collectivités, maîtres d'ouvrage et investisseurs</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Bénéficiaires</div><div class="det-item"><strong>Collectivités territoriales</strong><p>Vision stratégique pour le développement territorial durable</p></div><div class="det-item"><strong>Maîtres d'Ouvrage</strong><p>Planification et hiérarchisation des investissements</p></div><div class="det-item"><strong>Investisseurs</strong><p>Outil d'aide à la décision avec scénarios optimisés</p></div></div>
+      </div></div>
+
+      <div id="t13" class="svc-panel"><div class="panel-grid">
+        <div><div class="panel-icon">📊</div><div class="panel-title">Post-évaluation<br><span>des Projets</span></div><p class="panel-desc">Analyse des résultats réels du projet pour capitaliser les retours d'expérience et contribuer à l'amélioration continue.</p><ul class="panel-pts"><li>Analyse des résultats techniques, financiers, environnementaux et sociaux du projet</li><li>Comparaison des objectifs initiaux avec les performances réelles obtenues</li><li>Identification des réussites, des écarts et des axes d'amélioration</li><li>Capitalisation des retours d'expérience pour les futurs projets</li><li>Contribution à l'amélioration continue et à la pérennité des investissements</li></ul></div>
+        <div class="panel-visual"><div class="panel-sub">Axes d'analyse</div><div class="det-item"><strong>Performance globale</strong><p>Technique, financière, environnementale et sociale</p></div><div class="det-item"><strong>Écarts &amp; réussites</strong><p>Comparaison objectifs initiaux / résultats réels obtenus</p></div><div class="det-item"><strong>Retours d'expérience</strong><p>Capitalisation pour les futurs projets et amélioration continue</p></div></div>
+      </div></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="sec-full" style="background:linear-gradient(135deg,rgba(0,168,150,.05),transparent);border-top:1px solid var(--bdr);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <h2 class="sec-title reveal">Contact</h2>
+    <div class="divider reveal"></div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <p class="contact-info" style="color:var(--gray);line-height:1.8;margin-bottom:1.5rem;font-size:clamp(.88rem,.85rem + .25vw,1rem);">Vous avez un projet d'ingénierie ou d'études techniques ? Notre équipe est disponible pour étudier votre besoin et vous proposer un accompagnement sur-mesure.</p>
+        <div class="contact-dets">
+          <div class="c-det">
+            <div class="ico">✉️</div>
+            <div><div class="lbl">Email</div><a href="mailto:igem.maroc@gmail.com">igem.maroc@gmail.com</a></div>
+          </div>
+          <div class="c-det">
+            <div class="ico">📞</div>
+            <div><div class="lbl">Téléphone</div><a href="tel:+212661803586">+212 6 61 80 35 86</a></div>
+          </div>
+          <div class="c-det">
+            <div class="ico">📍</div>
+            <div><div class="lbl">Adresse</div><span class="addr">IMM 7 RUE MOULAY RACHID<br>APPT N°10 HASSAN<br>RABAT, MAROC</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <form class="cform" id="contactForm">
+          <div class="frow">
+            <div class="fg"><label>Nom complet *</label><input type="text" name="from_name" id="fname" placeholder="Votre nom" required></div>
+            <div class="fg"><label>Email *</label><input type="email" name="from_email" id="femail" placeholder="votre@email.com" required></div>
+          </div>
+          <div class="fg">
+            <label>Sujet</label>
+            <select name="subject" id="fsubject">
+              <option value="">Choisir un sujet…</option>
+              <option>Études d'identification et d'évaluation</option>
+              <option>Études de faisabilité</option>
+              <option>Études APS / APD</option>
+              <option>Documents de consultation (DCE)</option>
+              <option>Études d'impact environnemental</option>
+              <option>Études de risques naturels</option>
+              <option>Plans directeurs</option>
+              <option>Suivi &amp; contrôle des travaux</option>
+              <option>Post-évaluation</option>
+              <option>Autre demande</option>
+            </select>
+          </div>
+          <div class="fg"><label>Message *</label><textarea name="message" id="fmessage" placeholder="Décrivez votre projet ou votre demande…" required></textarea></div>
+          <button type="submit" class="btn-send" id="submitBtn">
+            <span id="btnText">Envoyer le message</span>
+            <span id="btnIcon">→</span>
+          </button>
+          <div class="fsuccess" id="successMsg">✅ Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.</div>
+          <div class="ferror" id="errorMsg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">IG<span>E</span>M</div>
+  <p>© 2026 IGEM Bureau d'Études Techniques · Rabat, Maroc</p>
+  <p>Ingénierie &amp; Expertise pour des Projets Durables</p>
+</footer>
+
+<!-- Back to top -->
+<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Retour en haut">↑</button>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+// Initialize EmailJS
+(function(){
+  emailjs.init("nsSpE_76SuVBaaUhC");
+})();
+
+// Hamburger
+const burger = document.getElementById('burger');
+const navLinks = document.getElementById('navLinks');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+function closeMenu() {
+  burger.classList.remove('open');
+  navLinks.classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!burger.contains(e.target) && !navLinks.contains(e.target)) closeMenu();
+});
+
+// Scroll reveal
+const revEls = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver((entries) => {
+  entries.forEach((en, i) => {
+    if (en.isIntersecting) {
+      setTimeout(() => en.target.classList.add('visible'), i * 60);
+      revObs.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.08 });
+revEls.forEach(el => revObs.observe(el));
+
+// Back to top
+const toBtn = document.getElementById('totop');
+window.addEventListener('scroll', () => {
+  toBtn.classList.toggle('show', window.scrollY > 400);
+}, { passive: true });
+
+// Tabs
+function showTab(id, btn) {
+  document.querySelectorAll('.svc-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  btn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+
+// Nav active highlight on scroll
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+}, { passive: true });
+
+// Contact form with EmailJS
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const btn = document.getElementById('submitBtn');
+  const successMsg = document.getElementById('successMsg');
+  const errorMsg = document.getElementById('errorMsg');
+  
+  // Hide previous messages
+  successMsg.style.display = 'none';
+  errorMsg.style.display = 'none';
+  
+  // Disable button and show loading state
+  btn.disabled = true;
+  document.getElementById('btnText').textContent = 'Envoi en cours…';
+  document.getElementById('btnIcon').textContent = '⏳';
+  
+  // Send email using EmailJS
+  emailjs.sendForm('service_4mjmmyl', 'template_jdzsj2v', this)
+    .then(function(response) {
+      console.log('SUCCESS!', response.status, response.text);
+      
+      // Show success message
+      successMsg.style.display = 'block';
+      
+      // Reset form
+      document.getElementById('contactForm').reset();
+      
+      // Reset button
+      btn.disabled = false;
+      document.getElementById('btnText').textContent = 'Envoyer le message';
+      document.getElementById('btnIcon').textContent = '→';
+      
+      // Scroll to success message
+      successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+    }, function(error) {
+      console.log('FAILED...', error);
+      
+      // Show error message
+      errorMsg.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement à igem.maroc@gmail.com';
+      errorMsg.style.display = 'block';
+      
+      // Reset button
+      btn.disabled = false;
+      document.getElementById('btnText').textContent = 'Envoyer le message';
+      document.getElementById('btnIcon').textContent = '→';
+    });
+});
+</script>
+</body>
+</html>
